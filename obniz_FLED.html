@@ -1,0 +1,47 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+  <script src="https://unpkg.com/obniz@3.24.0/obniz.js"></script>
+  <script>
+    let obniz = new Obniz("7571-8342");  //自分のobnizの番号に書き換えて下さい
+    /*  ②ここに必要な変数宣言を書きます  */
+    let fLED;
+    obniz.onconnect = async function () {
+      /*  ③ここに様々なJavaScriptの処理を書きます  */
+      fLED = obniz.wired("WS2811", {gnd:9, vcc:10, din:11});
+      fLED.rgb(255, 255, 255);
+      $.get("https://ntool.online/data/train_all.json",
+        function(data){
+          let linename = data[0][0].railName;
+          console.log(linename);
+          let lineinformation = data[0][0].railName;
+          //Webページ上に表示
+          $("linename").text(linename);
+          $("lineinformation").text(lineinformation);
+          switch (lineinformation){
+            case '平常運転':
+            //fLED.rgb(  0, 255,   0);
+            break;
+            case '列車遅延':
+            case '運転状況':
+            //fLED.rgb(255, 128,   0);
+            break;
+            case '運転見合わせ':
+            //fLED.rgb(255,   0,   0);
+            break;
+            case '運転情報':
+            case '運転計画':
+            case 'その他':
+            //fLED.rgb(255, 255, 255);
+}
+});
+}
+</script>
+</head>
+<body>
+  <div id="obniz-debug"></div>
+  <h1>Webプログラミング入門(obniz)</h1>
+<span id = linename>路線</span>は<span id = lineinformation>運行情報</span>中です。
+</body>
+</html>
