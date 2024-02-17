@@ -1,0 +1,76 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="jquery-3.7.1.min.js"></script>
+  <script src="https://unpkg.com/obniz@3.24.0/obniz.js"></script>
+  <script>
+ /*   let obniz = new Obniz("7571-8342");  //自分のobnizの番号に書き換えて下さい
+      ②ここに必要な変数宣言を書きます  
+    let fLED;
+    obniz.onconnect = async function () {
+        ③ここに様々なJavaScriptの処理を書きます  
+      fLED = obniz.wired("WS2811", {gnd:9, vcc:10, din:11});
+      fLED.rgb(255, 255, 255); */
+      $.get("https://isclabo.thick.jp/train_all.php",
+        function(data){
+          let lineCompany1 = data.data[4][60].companyName;
+          let lineName1 = data.data[4][60].railName;
+          let lineInformation1 = data.data[4][60].status;
+          console.log(lineCompany1);
+          console.log(lineName1);
+          console.log(lineInformation1);
+          let lineCompany2 = data.data[4][66].companyName;
+          let lineName2 = data.data[4][66].railName;
+          let lineInformation2 = data.data[4][66].status;
+          console.log(lineCompany2);
+          console.log(lineName2);
+          console.log(lineInformation2);
+          //Webページ上に表示
+          if (lineName1.indexOf(lineCompany1) !== -1){
+             $("#lineCompany1").hide();
+             $(".lC2").hide();
+             } else {
+             $("#lineCompany1").text(lineCompany1);
+          }
+          $("#lineName1").text(lineName1);
+          $("#lineInformation1").text(lineInformation1);
+          if (lineName2.indexOf(lineCompany2) !== -1){
+             $("#lineCompany2").hide();
+             $(".lC2").hide();
+             } else {
+             $("#lineCompany2").text(lineCompany2);
+          }
+          $("#lineName2").text(lineName2);
+          $("#lineInformation2").text(lineInformation2);
+          switch (lineInformation1){
+            case '平常運転':
+            //fLED.rgb(  0, 255,   0);
+            break;
+            case '列車遅延':
+            case '運転状況':
+            //fLED.rgb(255, 128,   0);
+            break;
+            case '運転見合わせ':
+            //fLED.rgb(255,   0,   0);
+            break;
+            case '運転情報':
+            case '運転計画':
+            case 'その他':
+            //fLED.rgb(255, 255, 255);
+          }
+        });
+    //}
+   </script>
+</head>
+<body>
+  <div id="obniz-debug"></div>
+  <h1>出発アラーム・運行情報通知板</h1>
+  <h2>設定中の情報</h2>
+  <h2>各種設定画面</h2>
+  <h2>路線運行情報</h2>
+    <h3>１路線目</h3>
+      <span id = lineCompany1>運営会社</span><span class = lC2>の</span><span id = lineName1>鉄道路線</span>は<span id = lineInformation1>運行情報</span>中です。
+    <h3>２路線目</h3>
+      <span id = lineCompany2>運営会社</span><span class = lC2>の</span><span id = lineName2>鉄道路線</span>は<span id = lineInformation2>運行情報</span>中。
+</body>
+</html>
