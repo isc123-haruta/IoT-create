@@ -13,49 +13,78 @@
       fLED.rgb(255, 255, 255); */
       $.get("https://isclabo.thick.jp/train_all.php",
         function(data){
-          let lineCompany1 = data.data[4][60].companyName;
-          let lineName1 = data.data[4][60].railName;
-          let lineInformation1 = data.data[4][60].status;
+          //1路線目取得
+          let lineCompany1 = data.data[4][71].companyName;
+          let lineName1 = data.data[4][71].railName;
+          let lineInformation1 = data.data[4][71].status;
           console.log(lineCompany1);
           console.log(lineName1);
           console.log(lineInformation1);
-          let lineCompany2 = data.data[4][66].companyName;
-          let lineName2 = data.data[4][66].railName;
-          let lineInformation2 = data.data[4][66].status;
+          //2路線目取得
+          let lineCompany2 = data.data[4][5].companyName;
+          let lineName2 = data.data[4][5].railName;
+          let lineInformation2 = data.data[4][5].status;
           console.log(lineCompany2);
           console.log(lineName2);
           console.log(lineInformation2);
-          //Webページ上に表示
+          //1路線目基本情報
           if (lineName1.indexOf(lineCompany1) !== -1){
              $("#lineCompany1").hide();
-             $(".lC2").hide();
+             $(".Sub1").hide();
              } else {
-             $("#lineCompany1").text(lineCompany1);
+             $("#lineCompany1").text(lineCompany1+'の');
           }
           $("#lineName1").text(lineName1);
-          $("#lineInformation1").text(lineInformation1);
+          //2路線目基本情報
           if (lineName2.indexOf(lineCompany2) !== -1){
              $("#lineCompany2").hide();
-             $(".lC2").hide();
+             $(".Sub1").hide();
              } else {
-             $("#lineCompany2").text(lineCompany2);
+             $("#lineCompany2").text(lineCompany2+'の');
           }
           $("#lineName2").text(lineName2);
-          $("#lineInformation2").text(lineInformation2);
+          //1路線目運行情報
           switch (lineInformation1){
             case '平常運転':
+            $("#lineInformation1").text('平常運転中です').css("color","seagreen");
             //fLED.rgb(  0, 255,   0);
             break;
             case '列車遅延':
             case '運転状況':
+            case '運転再開':
+            $("#lineInformation1").text('ダイヤが乱れています').css("color","gold");
             //fLED.rgb(255, 128,   0);
             break;
             case '運転見合わせ':
+            $("#lineInformation1").text('運転見合わせしています').css("color","crimson");
             //fLED.rgb(255,   0,   0);
             break;
             case '運転情報':
             case '運転計画':
             case 'その他':
+            $("#lineInformation1").text('時刻表通りに運転しない可能性などがあります').css("color","beige");
+            //fLED.rgb(255, 255, 255);
+          }
+          //2路線目運行情報
+          switch (lineInformation2){
+            case '平常運転':
+            $("#lineInformation2").text('平常運転中です').css("color","seagreen");
+            //fLED.rgb(  0, 255,   0);
+            break;
+            case '列車遅延':
+            case '運転状況':
+            case '運転再開':
+            $("#lineInformation2").text('ダイヤが乱れています').css("color","gold");
+            //fLED.rgb(255, 128,   0);
+            break;
+            case '運転見合わせ':
+            $("#lineInformation2").text('運転見合わせしています').css("color","crimson");
+            //fLED.rgb(255,   0,   0);
+            break;
+            case '運転情報':
+            case '運転計画':
+            case 'その他':
+            $("#lineInformation2").text('時刻表通りに運転しない可能性などがあります').css("color","beige");
             //fLED.rgb(255, 255, 255);
           }
         });
@@ -69,8 +98,8 @@
   <h2>各種設定画面</h2>
   <h2>路線運行情報</h2>
     <h3>１路線目</h3>
-      <span id = lineCompany1>運営会社</span><span class = lC2>の</span><span id = lineName1>鉄道路線</span>は<span id = lineInformation1>運行情報</span>中です。
+      <span id = lineCompany1>運営会社の</span><span id = lineName1>鉄道路線</span>は<span id = lineInformation1>運行情報</span>
     <h3>２路線目</h3>
-      <span id = lineCompany2>運営会社</span><span class = lC2>の</span><span id = lineName2>鉄道路線</span>は<span id = lineInformation2>運行情報</span>中。
+      <span id = lineCompany2>運営会社の</span><span id = lineName2>鉄道路線</span>は<span id = lineInformation2>運行情報</span>
 </body>
 </html>
