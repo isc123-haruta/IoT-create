@@ -18,6 +18,8 @@ $.get("https://isclabo.thick.jp/train_all.php",
 		//コンソール基本情報取得
 		let lastupdeted = data.lastUpdated;
 		console.log(lastupdeted);
+		let selectedLine1No = 0;
+		let selectedLine2No = 1;
 		//1路線目取得
 		//地域選択
 		let selectElem1 = document.getElementById("areaSelect1");
@@ -26,9 +28,9 @@ $.get("https://isclabo.thick.jp/train_all.php",
 			let selecteddata1 = $("#areaSelect1").children("option:selected");
 			let selectedArea1Txt = selecteddata1.text();
 			$("#areaSelected1").text('１路線目の地域：'+selectedArea1Txt)
-			let lineCompany1 = data.data[selectedArea1No+1][0].companyName;
-			let lineName1 = data.data[selectedArea1No+1][0].railName;
-			let lineInformation1 = data.data[selectedArea1No+1][0].status;
+			let lineCompany1 = data.data[selectedArea1No+1][selectedLine1No].companyName;
+			let lineName1 = data.data[selectedArea1No+1][selectedLine1No].railName;
+			let lineInformation1 = data.data[selectedArea1No+1][selectedLine1No].status;
 			console.log(lineCompany1);
 			console.log(lineName1);
 			console.log(lineInformation1);
@@ -48,7 +50,7 @@ $.get("https://isclabo.thick.jp/train_all.php",
 				case '列車遅延':
 				case '運転状況':
 				case '運転再開':
-				$("#lineInformation1").text('ダイヤが乱れています').css("color","gold");
+				$("#lineInformation1").text('ダイヤが乱れています').css("color","darkorange");
 				//fLED.rgb(255, 128,   0);
 				break;
 				case '運転見合わせ':
@@ -70,9 +72,9 @@ $.get("https://isclabo.thick.jp/train_all.php",
 			let selecteddata2 = $("#areaSelect2").children("option:selected");
 			let selectedArea2Txt = selecteddata2.text();
 			$("#areaSelected2").text('２路線目の地域：'+selectedArea2Txt)
-			let lineCompany2 = data.data[selectedArea2No+1][0].companyName;
-			let lineName2 = data.data[selectedArea2No+1][0].railName;
-			let lineInformation2 = data.data[selectedArea2No+1][0].status;
+			let lineCompany2 = data.data[selectedArea2No+1][selectedLine2No].companyName;
+			let lineName2 = data.data[selectedArea2No+1][selectedLine2No].railName;
+			let lineInformation2 = data.data[selectedArea2No+1][selectedLine2No].status;
 			console.log(lineCompany2);
 			console.log(lineName2);
 			console.log(lineInformation2);
@@ -92,7 +94,7 @@ $.get("https://isclabo.thick.jp/train_all.php",
 				case '列車遅延':
 				case '運転状況':
 				case '運転再開':
-				$("#lineInformation2").text('ダイヤが乱れています').css("color","gold");
+				$("#lineInformation2").text('ダイヤが乱れています').css("color","darkorange");
 				//fLED.rgb(255, 128,   0);
 				break;
 				case '運転見合わせ':
@@ -150,11 +152,11 @@ $.get("https://isclabo.thick.jp/train_all.php",
 			<div id = areaSelected1>１路線目の地域：--選択してください--</div>
 			<div id = lineSelected1>１路線目の名称：--選択してください--</div>
 			<h4><div>運行情報</div></h4>
-				<span id = lineCompany1>運営会社の</span><span id = lineName1>鉄道路線は</span><span id = lineInformation1>運行情報</span>
+				<span id = lineCompany1>未</span><span id = lineName1>選</span><span id = lineInformation1>択</span>
 			<h3>２路線目</h3>
 			<div id = areaSelected2>２路線目の地域：--選択してください--</div>
 			<div id = lineSelected2>２路線目の名称：--選択してください--</div>
 			<h4><div>運行情報</div></h4>
-				<span id = lineCompany2>運営会社の</span><span id = lineName2>鉄道路線は</span><span id = lineInformation2>運行情報</span>
+				<span id = lineCompany2>未</span><span id = lineName2>選</span><span id = lineInformation2>択</span>
 </body>
 </html>
