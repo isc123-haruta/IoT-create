@@ -22,12 +22,16 @@ $.get("https://isclabo.thick.jp/train_all.php",
 		let selectedLine2No = 1;
 		//1路線目取得
 		//地域選択
-		let selectElem1 = document.getElementById("areaSelect1");
-		selectElem1.addEventListener("change", () => {
-			let selectedArea1No = selectElem1.selectedIndex;
+		let selectAreaElem1 = document.getElementById("areaSelect1");
+		selectAreaElem1.addEventListener("change", () => {
+			let selectedArea1No = selectAreaElem1.selectedIndex;
 			let selecteddata1 = $("#areaSelect1").children("option:selected");
 			let selectedArea1Txt = selecteddata1.text();
-			$("#areaSelected1").text('１路線目の地域：'+selectedArea1Txt)
+			$("#areaSelected1").text('1路線目の地域：'+selectedArea1Txt)
+			//路線選択
+			for(let i=0; i<data.data[9].length; i++){
+				$("#addLineList1").text('<option value="i">${i}</option>');
+			}
 			let lineCompany1 = data.data[selectedArea1No+1][selectedLine1No].companyName;
 			let lineName1 = data.data[selectedArea1No+1][selectedLine1No].railName;
 			let lineInformation1 = data.data[selectedArea1No+1][selectedLine1No].status;
@@ -66,9 +70,9 @@ $.get("https://isclabo.thick.jp/train_all.php",
 		});
 		//2路線目取得
 		//地域選択
-		let selectElem2 = document.getElementById("areaSelect2");
-		selectElem2.addEventListener("change", () => {
-			let selectedArea2No = selectElem2.selectedIndex;
+		let selectAreaElem2 = document.getElementById("areaSelect2");
+		selectAreaElem2.addEventListener("change", () => {
+			let selectedArea2No = selectAreaElem2.selectedIndex;
 			let selecteddata2 = $("#areaSelect2").children("option:selected");
 			let selectedArea2Txt = selecteddata2.text();
 			$("#areaSelected2").text('２路線目の地域：'+selectedArea2Txt)
@@ -115,11 +119,11 @@ $.get("https://isclabo.thick.jp/train_all.php",
 	<div id="obniz-debug"></div>
 	<h1>アラーム・運行情報通知板 設定画面</h1>
 		<h2>各種設定画面</h2>
-			<h3>１路線目</h3>
+			<h3>1路線目</h3>
 				<div>
 				<label for="areaSelect1">地域を選んでください</label>
 				<select name="area" id="areaSelect1">
-					<option value="">--選択してください--</option>
+					<option value="" disabled selected>--選択してください--</option>
 					<option value="2">北海道</option>
 					<option value="3">東北</option>
 					<option value="4">関東</option>
@@ -131,11 +135,15 @@ $.get("https://isclabo.thick.jp/train_all.php",
 				</select></div>
 				<div>
 				<label for="lineSelect1">路線を選んでください</label>
-				<select name="line" id="lineSelect1"></select>
+				<select name="line" id="lineSelect1">
+					<option disabled selected>--選択してください--</option>
+					<option id = "addLineList1"></option>
+				</select>
+				</div>
 				<h3>２路線目</h3>
 				<label for="areaSelect2">地域を選んでください</label>
 				<select name="area" id="areaSelect2">
-					<option value="">--選択してください--</option>
+					<option value="" disabled selected>--選択してください--</option>
 					<option value="2">北海道</option>
 					<option value="3">東北</option>
 					<option value="4">関東</option>
@@ -144,19 +152,21 @@ $.get("https://isclabo.thick.jp/train_all.php",
 					<option value="7">九州</option>
 					<option value="8">中国</option>
 					<option value="9">四国</option>
-				</select></div>
+				</select>
+				<div>
 				<label for="lineSelect2">路線を選んでください</label>
-				<select name="line" id="lineSelect2"></select></div>
+				<select name="line" id="lineSelect2">
+					<option disabled selected>--選択してください--</option>
+				</select>
+				</div>
 		<h2>設定中の情報</h2>
-			<h3>１路線目</h3>
-			<div id = areaSelected1>１路線目の地域：--選択してください--</div>
-			<div id = lineSelected1>１路線目の名称：--選択してください--</div>
-			<h4><div>運行情報</div></h4>
-				<span id = lineCompany1>未</span><span id = lineName1>選</span><span id = lineInformation1>択</span>
+			<h3>1路線目</h3>
+			<div id = areaSelected1>1路線目の地域：--選択してください--</div>
+			<div id = lineSelected1>1路線目の名称：--選択してください--</div>
+			<div>運行情報：<span id = lineCompany1>未</span><span id = lineName1>選</span><span id = lineInformation1>択</span></div>
 			<h3>２路線目</h3>
 			<div id = areaSelected2>２路線目の地域：--選択してください--</div>
 			<div id = lineSelected2>２路線目の名称：--選択してください--</div>
-			<h4><div>運行情報</div></h4>
-				<span id = lineCompany2>未</span><span id = lineName2>選</span><span id = lineInformation2>択</span>
+			<div>運行情報：<span id = lineCompany2>未</span><span id = lineName2>選</span><span id = lineInformation2>択</span></div>
 </body>
 </html>
