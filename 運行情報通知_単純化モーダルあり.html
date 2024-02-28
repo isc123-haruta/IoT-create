@@ -83,6 +83,7 @@
 			//コンソール基本情報取得
 			let lastupdeted = data.lastUpdated;
 			console.log(lastupdeted);
+			let selectLineElem = document.getElementById("lineSelect");
 			//1路線目取得
 			//地域選択
 			let selectAreaElem = document.getElementById("areaSelect");
@@ -92,7 +93,9 @@
 				let selectedAreaTxt = selectedAreadata.text();
 				$("#areaSelected").text('1路線目の地域：'+selectedAreaTxt)
 				//路線リスト制作
-				let selectLineElem = document.getElementById("lineSelect");
+				while(selectLineElem.firstChild){
+				selectLineElem.removeChild( selectLineElem.firstChild );
+				}
 				for(let i=0; i<data.data[selectedAreaNo+1].length; i++){
 					let option = document.createElement('option');
 					option.value = i;
@@ -104,37 +107,37 @@
 					let selectedLineNo = selectLineElem.selectedIndex;
 					let selectedLinedata = $("#lineSelect").children("option:selected");
 					let selectedLineTxt = selectedLinedata.text();
-					$("#lineSelected").text('1路線目の名称：'+selectedLineTxt)
-				let lineName = data.data[selectedAreaNo+1][selectedLineNo-1].railName;
-				let lineInformation = data.data[selectedAreaNo+1][selectedLineNo-1].status;
-				console.log(lineName);
-				console.log(lineInformation);
-				//1路線目基本情報
-				$("#lineName").text(lineName+'は');
-				//1路線目運行情報
-				switch (lineInformation){
-					case '平常運転':
-					$("#lineInformation").text('平常運転中です').css("color","seagreen");
-					//fLED.rgb(  0, 255,   0);
-					break;
-					case '列車遅延':
-					case '運転状況':
-					case '運転再開':
-					$("#lineInformation").text('ダイヤが乱れています').css("color","darkorange");
-					//fLED.rgb(255, 128,   0);
-					break;
-					case '運転見合わせ':
-					$("#lineInformation").text('運転見合わせしています').css("color","crimson");
-					//fLED.rgb(255,   0,   0);
-					break;
-					case '運転情報':
-					case '運転計画':
-					case 'その他':
-					$("#lineInformation").text('時刻表通りに運転しないなどの可能性があります').css("color","slategray");
-					//fLED.rgb(255, 255, 255);
-				}
+					let lineName = data.data[selectedAreaNo+1][selectedLineNo].railName;
+					let lineInformation = data.data[selectedAreaNo+1][selectedLineNo].status;
+					$("#lineSelected").text('1路線目の名称：'+lineName)
+					console.log(lineName);
+					console.log(lineInformation);
+					//1路線目基本情報
+					$("#lineName").text(lineName+'は');
+					//1路線目運行情報
+					switch (lineInformation){
+						case '平常運転':
+						$("#lineInformation").text('平常運転中です').css("color","seagreen");
+						//fLED.rgb(  0, 255,   0);
+						break;
+						case '列車遅延':
+						case '運転状況':
+						case '運転再開':
+						$("#lineInformation").text('ダイヤが乱れています').css("color","darkorange");
+						//fLED.rgb(255, 128,   0);
+						break;
+						case '運転見合わせ':
+						$("#lineInformation").text('運転見合わせしています').css("color","crimson");
+						//fLED.rgb(255,   0,   0);
+						break;
+						case '運転情報':
+						case '運転計画':
+						case 'その他':
+						$("#lineInformation").text('時刻表通りに運転しないなどの可能性があります').css("color","slategray");
+						//fLED.rgb(255, 255, 255);
+					}
+				});
 			});
-		});
 		});
 		/* ***** モーダル機能(start) **** */
 		$(function(){
