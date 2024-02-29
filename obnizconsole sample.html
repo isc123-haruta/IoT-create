@@ -1,0 +1,124 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script
+      src="https://unpkg.com/obniz@3.29.0/obniz.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+  <div id="obniz-debug"></div>
+	<h1>アラーム・運行情報通知板 設定画面</h1>
+		<h2>各種設定画面</h2>
+			<h3>地域設定</h3>
+			<p>地域を選んでください</p>
+				<div>
+					<select name="area" id="areaSelect">
+						<option value="" disabled selected>--選択してください--</option>
+						<option value="2">北海道</option>
+						<option value="3">東北</option>
+						<option value="4">関東</option>
+						<option value="5">中部</option>
+						<option value="6">近畿</option>
+						<option value="7">九州</option>
+						<option value="8">中国</option>
+						<option value="9">四国</option>
+					</select>
+				</div>
+			<h3>路線設定</h3>
+			<p>路線を選んでください</p>
+				<div>
+					<select name="line" id="lineSelect">
+						<option selected>--未選択--</option></select>
+				</div>
+		<h2>設定中の情報</h2>
+			<h3>1路線目</h3>
+				<div id = areaSelected>1路線目の地域：--選択してください--</div>
+				<div id = lineSelected>1路線目の名称：--選択してください--</div>
+				<div>運行情報：<span id = lineName>未選択</span><span id = lineInformation></span></div>
+</body>
+    <script>
+      var obniz = new Obniz("OBNIZ_ID_HERE");
+      obniz.onconnect = async function() {
+        obniz.display.print("Start!");
+        await obniz.wait(2000);
+        let date = new Date();
+        var time =  ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2)
+        obniz.display.print(time);
+        switch (date.getHours()){
+          case 6:
+          case 7:
+          case 8:
+            getAPI();
+            break;
+          dafault:
+            break;
+        $get("https://isclabo.thick.jp/train_all.php",
+          function(data){
+            //コンソール基本情報取得
+            let lastupdeted = data.lastUpdated;
+            console.log(lastupdeted);
+            let selectLineElem = document.getElementById("lineSelect");
+            //1路線目取得
+            //地域選択
+            let selectAreaElem = document.getElementById("areaSelect");
+            selectAreaElem.addEventListener("change", () => {
+              let selectedAreaNo = selectAreaElem.selectedIndex;
+              let selectedAreadata = $("#areaSelect").children("option:selected");
+              let selectedAreaTxt = selectedAreadata.text();
+              $("#areaSelected").text('1路線目の地域：'+selectedAreaTxt)
+              //路線リスト制作
+              while( selectLineElem.firstChild ){
+              selectLineElem.removeChild( selectLineElem.firstChild );
+              }
+              for(let i=0; i<data.data[selectedAreaNo+1].length; i++){
+                let option = document.createElement('option');
+                option.value = i;
+                option.textContent = data.data[selectedAreaNo+1][i].railName;
+                selectLineElem.appendChild(option)
+              }
+              //路線選択
+              selectLineElem.addEventListener("change", () => {
+                let selectedLineNo = selectLineElem.selectedIndex;
+                let selectedLinedata = $("#lineSelect").children("option:selected");
+                let selectedLineTxt = selectedLinedata.text();
+                let lineName = data.data[selectedAreaNo+1][selectedLineNo].railName;
+                let lineInformation = data.data[selectedAreaNo+1][selectedLineNo].status;
+                $("#lineSelected").text('1路線目の名称：'+lineName)
+                console.log(lineName);
+                console.log(lineInformation);
+                //1路線目基本情報
+                $("#lineName").text(lineName+'は');
+                //1路線目運行情報
+                switch (lineInformation){
+                  case '平常運転':
+                  $("#lineInformation").text('平常運転中です').css("color","seagreen");
+                  //fLED.rgb(  0, 255,   0);
+                  break;
+                  case '列車遅延':
+                  case '運転状況':
+                  case '運転再開':
+                  $("#lineInformation").text('ダイヤが乱れています').css("color","darkorange");
+                  //fLED.rgb(255, 128,   0);
+                  break;
+                  case '運転見合わせ':
+                  $("#lineInformation").text('運転見合わせしています').css("color","crimson");
+                  //fLED.rgb(255,   0,   0);
+                  break;
+                  case '運転情報':
+                  case '運転計画':
+                  case 'その他':
+                  $("#lineInformation").text('時刻表通りに運転しないなどの可能性があります').css("color","slategray");
+                  //fLED.rgb(255, 255, 255);
+                }
+              });
+            });
+          }
+        );
+      }
+    }
+    </script>
+  </body>
+</html>
