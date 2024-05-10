@@ -1,0 +1,108 @@
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+		<script src="https://unpkg.com/obniz@3.29.0/obniz.js" crossorigin="anonymous"></script>
+		<script>
+			var obniz = new Obniz("2556-2866");
+			let lineInformation = 'その他';
+			obniz.onconnect = async function() {
+				obniz.display.print("Start!");
+				var mp3 = obniz.wired("Grove_MP3", {gnd:0, vcc:1, mp3_rx:2, mp3_tx:3});
+				let date = new Date();
+				var time = ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2)
+				obniz.display.print(time);
+				switch (date.getHours()){
+					case 14:
+					case 15:
+					case 16:
+					case 17:
+					case 18:
+						GetStationInfo ();
+						await mp3.initWait();
+						mp3.setVolume(20);
+						SetLED();
+					dafault:
+						break;
+				}
+				function SetLED() {
+					obniz.display.print( lineInformation );
+					let fLED = obniz.wired("WS2811", {gnd:9, vcc: 10, din: 11});
+					if ( lineInformation == '平常運転' ){
+						fLED.rgb( 0, 255, 0 ); // green
+						Depature();
+					}
+					else if ( ( lineInformation == '列車遅延' ) || ( lineInformation == '運転状況' ) || ( lineInformation == '運転再開' ) ){
+						OnSpeaker( 101 );
+						fLED.rgb( 255, 128, 0 ); // orange
+						obniz.wait( 20000 );
+						Depature();
+					}
+					else if ( lineInformation == '運転見合わせ' ){
+						OnSpeaker( 102 );
+						fLED.rgb(255, 0, 0); // red
+						obniz.wait( 20000 );
+						Depature();
+					}
+					else if ( ( lineInformation == '運転情報' ) || ( lineInformation == '運転計画' ) || ( lineInformation == 'その他' ) ){
+						OnSpeaker( 103 );
+						fLED.rgb( 255, 255, 255 ); // white
+						obniz.wait( 20000 );
+						Depature();
+					}
+					else {
+						fLED.rgb( 0, 0, 139 ); // blue(異常)
+					}
+				}
+				function Depature(){
+					OnSpeaker( 201 );
+					obniz.wait( 30000 );
+					OnSpeaker( 202 );
+				}
+								function OnSpeaker( mode ){
+					mp3.play( mode );
+				}
+		 	}
+		 	GetStationInfo ();
+			function GetStationInfo (){
+				$.get("https://isclabo.thick.jp/train_all.php",
+				function(data){
+					//コンソール基本情報取得
+					let lastupdeted = data.lastUpdated;
+					console.log( lastupdeted );
+					let selectLineElem = document.getElementById( "lineSelect" );
+					let lineName = data.data[4][108].railName;
+					lineInformation = data.data[4][108].status;
+					$("#lineSelected").text('路線名称：'+lineName)
+					console.log(lineName);
+					console.log(lineInformation);
+					$("#lineName").text(lineName+'は');
+					switch (lineInformation){
+						case '平常運転':
+							$("#lineInformation").text('平常運転中です').css("color","seagreen");
+							break;
+						case '列車遅延':
+						case '運転状況':
+						case '運転再開':
+							$("#lineInformation").text('ダイヤが乱れています').css("color","darkorange");
+							break;
+						case '運転見合わせ':
+							$("#lineInformation").text('運転見合わせしています').css("color","crimson");
+							break;
+						case '運転情報':
+						case '運転計画':
+						case 'その他':
+							$("#lineInformation").text('時刻表通りに運転しないなどの可能性があります').css("color","slategray");
+					}
+				});
+			}
+		</script>
+	<body>
+		<div id="obniz-debug"></div>
+		<div style  =  "width: 90%; margin: 0 auto;">
+			<h1>アラーム・運行情報通知板</h1>
+			<div id = "areaSelected"></div>
+			<div id = "lineSelected"></div>
+			<div>運行情報：<span id = "lineName"></span><span id = "lineInformation"></span></div>
+		</div>
+	</body>
+</html>
